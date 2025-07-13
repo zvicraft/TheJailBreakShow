@@ -1,0 +1,53 @@
+name: TheJailBreakShow
+version: '1.0-SNAPSHOT'
+main: com.zvicraft.theJailBreakShow.TheJailBreakShow
+api-version: '1.20'
+authors: [ Ziv - zvicraft ]
+website: https://go.zvicraft.com/portfolio
+
+commands:
+  test:
+    description: Test command
+    aliases: test
+  freeday:
+    description: Activate Free Day (Guards only)
+    usage: /freeday
+    permission: thejailbreakshow.freeday
+  gold:
+    description: Gold management commands
+    usage: /gold <balance|give|take>
+    permission: thejailbreakshow.gold
+  team:
+    description: Team management commands
+    usage: /team <join|leave|list>
+    permission: thejailbreakshow.team
+  reload:
+    description: Reload the plugin configuration
+    usage: /reload
+    permission: thejailbreakshow.reload
+
+permissions:
+  thejailbreakshow.freeday:
+    description: Allows activating Free Day
+    default: true
+  thejailbreakshow.gold:
+    description: Allows checking gold balance
+    default: true
+  thejailbreakshow.team:
+    description: Allows team management
+    default: true
+  thejailbreakshow.gold.balance.others:
+    description: Allows checking other players' gold balance
+    default: op
+  thejailbreakshow.gold.give:
+    description: Allows giving gold to players
+    default: op
+  thejailbreakshow.gold.take:
+    description: Allows taking gold from players
+    default: op
+  thejailbreakshow.test:
+    description: Allows using the test command
+    default: op
+  thejailbreakshow.reload:
+    description: Allows reloading the plugin configuration
+    default: op

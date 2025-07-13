@@ -1,0 +1,29 @@
+# TheJailBreakShow Configuration
+
+# Teams Configuration
+teams:
+  max-guards: 2
+  default-guards: 1
+  guard-prisoner-ratio: 2  # 1 guard for every 2 prisoners
+
+# Rounds Configuration
+rounds:
+  free-day-round: 6
+  reset-after-round: 12
+  round-duration: 6000 # in seconds
+  auto-progress: false # Whether rounds should automatically progress
+
+# Free Day Configuration
+free-day:
+  duration: 300 # in seconds
+
+# Currency Configuration
+currency:
+  initial-gold: 100
+  kill-reward:
+    prisoner-kills-guard: 50
+    guard-kills-prisoner: 10
+
+# HUD Configuration
+hud:
+  update-interval: 20 # in ticks

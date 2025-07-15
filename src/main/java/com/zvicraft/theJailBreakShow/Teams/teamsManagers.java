@@ -1,6 +1,7 @@
 package com.zvicraft.theJailBreakShow.Teams;
 
 import com.zvicraft.theJailBreakShow.TheJailBreakShow;
+import com.zvicraft.theJailBreakShow.utils.LanguageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,6 +21,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class teamsManagers {
     private static final Map<UUID, Teams> playerTeams = new HashMap<>();
+    private static String chatChallengeAnswer = null;
+    private static boolean chatChallengeActive = false;
     private static int MAX_GUARDS = 2; // Will be loaded from config
     private static int DEFAULT_GUARDS = 1; // Will be loaded from config
     private static int GUARD_PRISONER_RATIO = 11; // Will be loaded from config
@@ -153,23 +156,26 @@ public class teamsManagers {
             t.removeEntry(player.getName());
         }
 
+        // Get language manager
+        LanguageManager lang = TheJailBreakShow.getInstance().getLanguageManager();
+
         // Add to new team
         switch (team) {
             case Prisoners:
                 scoreboard.getTeam("prisoners").addEntry(player.getName());
-                player.sendMessage(ChatColor.RED + "You are now a Prisoner!");
+                player.sendMessage(lang.getMessage("teams.player_joined_prisoners"));
                 break;
             case Guards:
                 scoreboard.getTeam("guards").addEntry(player.getName());
-                player.sendMessage(ChatColor.BLUE + "You are now a Guard!");
+                player.sendMessage(lang.getMessage("teams.player_joined_guards"));
                 break;
             case Spectators:
                 scoreboard.getTeam("spectators").addEntry(player.getName());
-                player.sendMessage(ChatColor.GRAY + "You are now a Spectator!");
+                player.sendMessage(lang.getMessage("teams.player_joined_spectators"));
                 break;
             default:
                 scoreboard.getTeam("prisoners").addEntry(player.getName());
-                player.sendMessage(ChatColor.GRAY + "You are now a Prisoners!");
+                player.sendMessage(lang.getMessage("teams.player_joined_prisoners"));
                 break;
         }
         player.setScoreboard(scoreboard);
@@ -185,6 +191,51 @@ public class teamsManagers {
 
     public static boolean isPlayerInGuardTeam(Player player) {
         return playerTeams.get(player.getUniqueId()) == Teams.Guards;
+    }
+
+    /**
+     * Sets the answer for the current chat challenge
+     *
+     * @param answer The answer to the chat challenge
+     */
+    public static void setChatChallengeAnswer(String answer) {
+        chatChallengeAnswer = answer;
+        chatChallengeActive = true;
+    }
+
+    /**
+     * Checks if a player's message matches the chat challenge answer
+     *
+     * @param player  The player who sent the message
+     * @param message The message to check
+     * @return True if the message matches the answer, false otherwise
+     */
+    public static boolean checkChatChallengeAnswer(Player player, String message) {
+        if (!chatChallengeActive || chatChallengeAnswer == null) {
+            return false;
+        }
+
+        if (message.trim().equalsIgnoreCase(chatChallengeAnswer.trim())) {
+            // Correct answer
+            chatChallengeActive = false;
+            chatChallengeAnswer = null;
+
+            // Set player as guard
+            setPlayerTeam(player, Teams.Guards);
+
+            // Set all other players as prisoners
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                if (!p.equals(player) && getPlayerTeam(p) != Teams.Guards) {
+                    setPlayerTeam(p, Teams.Prisoners);
+                }
+            }
+
+            // Announce the winner
+            Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " answered correctly and is now a guard!");
+            return true;
+        }
+
+        return false;
     }
 
     public static boolean isPlayerInPrisonerTeam(Player player) {
@@ -306,5 +357,33 @@ public class teamsManagers {
             isChatChallengeActive = false;
             Bukkit.broadcastMessage(ChatColor.RED + "The guard selection challenge has been cancelled.");
         }
+    }
+
+    /**
+     * Ends the current game and sets all players to spectator mode
+     * This is called when the match ends and players should wait for a new game to start
+     *
+     * @return true if the game was ended, false if there are too few players
+     */
+    public static boolean endGame() {
+        int playerCount = Bukkit.getOnlinePlayers().size();
+
+        // If there are only 2 or fewer players, don't end the game
+        if (playerCount <= 2) {
+            return false;
+        }
+
+        // Set all online players to spectator team
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            setPlayerTeam(player, Teams.Spectators);
+        }
+
+        // Reset any active game states
+        cancelChatChallenge();
+
+        // You might want to add additional game state reset logic here
+        // For example, resetting scores, free day status, etc.
+
+        return true;
     }
 }

@@ -1,0 +1,142 @@
+# English language file for TheJailBreakShow
+
+# General messages
+general:
+  no_permission: "&cYou don't have permission to use this command!"
+  prefix: "&6[JailBreak] &r"
+  reload: "&aConfiguration reloaded successfully!"
+
+# Reload command
+reload:
+  reloading: "&eReloading TheJailBreakShow configuration..."
+  player_only: "&cThis command can only be used by players!"
+  player_not_found: "&cPlayer not found!"
+  invalid_amount: "&cInvalid amount!"
+  amount_must_be_positive: "&cAmount must be positive!"
+  not_enough_gold: "&c%player% doesn't have enough gold!"
+  game_not_active: "&cThe game is not active yet! Please wait for the game to start."
+  game_active: "&aThe game is currently active."
+  game_inactive: "&cThe game is currently not active."
+  system_message: "System Message"
+
+# Death messages
+death:
+  spectator_message: "&7You died! You are now a spectator."
+
+# Team-related messages
+teams:
+  player_joined_prisoners: "&cYou are now a Prisoner!"
+  player_joined_guards: "&9You are now a Guard!"
+  player_joined_spectators: "&7You are now a Spectator!"
+  teams_setup: "&aTeams have been set up."
+  guard: "Guard"
+  prisoner: "Prisoner"
+  spectator: "Spectator"
+  none: "None"
+
+# Guard selection messages
+guard_selection:
+  player_selected: "has been selected as the guard!"
+  admin_selected: "You've selected %player% as the guard."
+  random_selected: "%player% has been randomly selected as the guard."
+  no_players: "No players are connected!"
+  chat_challenge_started: "Chat challenge has started! First to answer correctly becomes the guard."
+  chat_challenge_error: "Could not start chat challenge."
+  guard_selected: "&a%player% answered first and has been selected as the guard!"
+  challenge_cancelled: "&cThe guard selection challenge has been cancelled."
+  not_enough_players: "&cNot enough players to start a guard selection challenge!"
+
+# LR System messages
+lr:
+  header: "&c==== LR - Last Round ===="
+  activated: "&6This is the last round! All prisoners can exit their cells!"
+  deactivated: "&eLR mode has ended."
+  granted: "&aYou have been granted LR status! You can exit your cell!"
+  revoked: "&cYour LR status has been revoked."
+  reward: "&6You received %amount% gold for killing a guard!"
+  reward_bonus: "&e (Includes bonus for %kills% previous kills)"
+  player_not_online: "&cPlayer %player% is not online!"
+  not_prisoner: "&cThis player is not a prisoner!"
+  given: "&aYou gave LR to player %player%"
+  no_prisoners: "&eThere are no prisoners left in the game."
+  prisoner_count: "&eThere are %count% prisoners in the game."
+  player_granted: "&6Player %player% has been granted LR status!"
+
+# Free Day messages
+freeday:
+  activated: "&aFree Day has been activated! Prisoners can roam freely!"
+  deactivated: "&cFree Day has ended. Return to your cells!"
+  already_active: "&cFree Day is already active!"
+  no_damage: "&cYou cannot harm players during Free Day!"
+  guards_only: "&cOnly guards can activate Free Day!"
+
+# Round messages
+rounds:
+  round_start: "&6Day %round%"
+  day_announcement: "Day %round% has begun"
+  free_day_subtitle: "&aFree Day is active!"
+  round_end: "&6Day %round% has ended!"
+  not_enough_players: "&cNot enough players to start the game! (Minimum: %min%, Current: %current%)"
+  game_started: "&aThe game has started!"
+  game_stopped: "&cThe game has been stopped!"
+  all_guards_eliminated: "&cAll guards have been eliminated!"
+  all_prisoners_eliminated: "&cAll prisoners have been eliminated!"
+  waiting_for_players: "&eWaiting for more players to join before starting the next round..."
+
+# Gold system
+gold:
+  commands_title: "Gold Commands"
+  command_balance_desc: "Check your or another player's gold balance"
+  command_give_desc: "Give gold to a player (Admin only)"
+  command_take_desc: "Take gold from a player (Admin only)"
+  balance: "&6Your gold balance: &e%amount%"
+  balance_other: "&6%player%'s gold balance: &e%amount%"
+  received: "&aYou received &e%amount% &agold!"
+  received_from: "&aYou received &e%amount% &agold from %player%!"
+  gave: "&aGave &e%amount% &agold to %player%"
+  spent: "&cYou spent &e%amount% &cgold."
+  not_enough: "&cYou don't have enough gold! Required: &e%amount%"
+  lost: "&cYou lost &e%amount% &cgold"
+  took: "&aTook &e%amount% &agold from %player%"
+  usage_give: "&cUsage: /gold give <player> <amount>"
+  usage_take: "&cUsage: /gold take <player> <amount>"
+  guard_kill_reward: "&6You received %amount% gold for killing a prisoner!"
+
+# EndGame command
+endgame:
+  header: "&6============================="
+  ended: "&cThe current game has ended!"
+  spectator_message: "&eAll players are now spectators until a new game starts."
+  footer: "&6============================="
+  min_players: "&cCannot end game with fewer than %min% players."
+  waiting: "&eWaiting for more players to join..."
+
+# GUI messages
+gui:
+  guard_challenge_title: "Guard Challenges"
+  guard_selection_title: "Guard Selection"
+  current_team: "Current Team:"
+  click_to_select_guard: "Click to select as guard"
+  random_selection: "Random Selection"
+  random_selection_desc: "Select a random guard"
+  chat_challenge: "Chat Challenge"
+  chat_challenge_desc: "First to answer correctly becomes the guard"
+  challenge:
+    speed_title: "Speed Challenge"
+    speed_desc: "Get a speed boost for a limited time"
+    strength_title: "Strength Challenge"
+    strength_desc: "Get increased damage for a limited time"
+    jump_title: "Jump Challenge"
+    jump_desc: "Get enhanced jumping for a limited time"
+    cost: "Cost: %amount% gold"
+
+# Challenge messages
+challenge:
+  activated: "You activated the %challenge% for %cost% gold!"
+  not_enough_gold: "You don't have enough gold for this challenge!"
+
+# Guard Challenge messages
+guard_challenge:
+  separator: "&6============================"
+  begun: "&aA guard challenge has begun!"
+  player_chosen: "&e%player% has been chosen to be a guard!"

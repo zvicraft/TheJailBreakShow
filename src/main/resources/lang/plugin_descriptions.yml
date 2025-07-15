@@ -1,0 +1,52 @@
+# Plugin command descriptions and usage messages
+# Note: This file is not directly used by the plugin, but serves as a reference
+# for translating plugin.yml entries in different language versions
+
+commands:
+  test:
+    description: "Test command"
+    usage: "/test"
+  freeday:
+    description: "Activate Free Day (Guards only)"
+    usage: "/freeday"
+  gold:
+    description: "Gold management commands"
+    usage: "/gold <balance|give|take>"
+  team:
+    description: "Team management commands"
+    usage: "/team <join|leave|list>"
+  reload:
+    description: "Reload the plugin configuration"
+    usage: "/reload"
+  guardchallenge:
+    description: "Guard challenge command"
+    usage: "/guardchallenge"
+  selectguard:
+    description: "Select guard roles and abilities"
+    usage: "/selectguard"
+  lr:
+    description: "Last Round management for prisoners"
+    usage: "/lr [player]"
+  endgame:
+    description: "End the current game and set all players to spectator mode"
+    usage: "/endgame"
+
+permissions:
+  thejailbreakshow.freeday:
+    description: "Allows activating Free Day"
+  thejailbreakshow.gold:
+    description: "Allows checking gold balance"
+  thejailbreakshow.team:
+    description: "Allows team management"
+  thejailbreakshow.gold.balance.others:
+    description: "Allows checking other players' gold balance"
+  thejailbreakshow.gold.give:
+    description: "Allows giving gold to players"
+  thejailbreakshow.gold.take:
+    description: "Allows taking gold from players"
+  thejailbreakshow.test:
+    description: "Allows using the test command"
+  thejailbreakshow.reload:
+    description: "Allows reloading the plugin configuration"
+  thejailbreakshow.endgame:
+    description: "Allows ending the current game"

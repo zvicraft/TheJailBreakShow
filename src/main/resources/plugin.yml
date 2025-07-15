@@ -29,6 +29,24 @@ commands:
   guardchallenge:
     description: Guard challenge command
     usage: /guardchallenge
+  selectguard:
+    description: Select guard roles and abilities
+    usage: /selectguard
+  lr:
+    description: Last Round management for prisoners
+    usage: /lr [player]
+  endgame:
+    description: End the current game and set all players to spectator mode
+    usage: /endgame
+    permission: thejailbreakshow.endgame
+  trivia:
+    description: Manages trivia games
+    usage: /<command> [subcommand]
+  language:
+    description: Change or view the server language
+    usage: /language [code]
+    aliases: [ lang ]
+    permission: thejailbreakshow.language
 
 permissions:
   thejailbreakshow.freeday:
@@ -40,6 +58,9 @@ permissions:
   thejailbreakshow.team:
     description: Allows team management
     default: true
+  thejailbreakshow.language:
+    description: Allows changing the server language
+    default: op
   thejailbreakshow.gold.balance.others:
     description: Allows checking other players' gold balance
     default: op
@@ -55,3 +76,12 @@ permissions:
   thejailbreakshow.reload:
     description: Allows reloading the plugin configuration
     default: op
+  thejailbreakshow.endgame:
+    description: Allows ending the current game
+    default: op
+
+# Add this section to include language files
+resources:
+  - lang/en.yml
+  - lang/he.yml
+  - lang/plugin_description.yml

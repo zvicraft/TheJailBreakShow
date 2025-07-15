@@ -1,8 +1,12 @@
 package com.zvicraft.theJailBreakShow.Currency;
 
 import com.zvicraft.theJailBreakShow.TheJailBreakShow;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -10,50 +14,30 @@ import java.util.UUID;
 public class GoldManager {
     private final TheJailBreakShow plugin;
     private final Map<UUID, Integer> playerGold = new HashMap<>();
-    private final int initialGold = 100; // Default initial gold
+    private final int initialGold = 100;
+    private final File goldFile;
+    private FileConfiguration goldConfig;
 
     public GoldManager(TheJailBreakShow plugin) {
         this.plugin = plugin;
+        this.goldFile = new File(plugin.getDataFolder(), "gold.yml");
+        loadData();
     }
 
-    /**
-     * Gets the amount of gold a player has
-     *
-     * @param player The player
-     * @return The amount of gold
-     */
     public int getGold(Player player) {
         return playerGold.getOrDefault(player.getUniqueId(), initialGold);
     }
 
-    /**
-     * Sets the amount of gold a player has
-     *
-     * @param player The player
-     * @param amount The amount of gold
-     */
     public void setGold(Player player, int amount) {
         playerGold.put(player.getUniqueId(), amount);
+        saveData(); // Save automatically when gold is modified
     }
 
-    /**
-     * Adds gold to a player
-     *
-     * @param player The player
-     * @param amount The amount of gold to add
-     */
     public void addGold(Player player, int amount) {
         int currentGold = getGold(player);
         setGold(player, currentGold + amount);
     }
 
-    /**
-     * Removes gold from a player
-     *
-     * @param player The player
-     * @param amount The amount of gold to remove
-     * @return True if the player had enough gold, false otherwise
-     */
     public boolean removeGold(Player player, int amount) {
         int currentGold = getGold(player);
         if (currentGold >= amount) {
@@ -63,21 +47,43 @@ public class GoldManager {
         return false;
     }
 
-    /**
-     * Saves gold data to config or database
-     */
     public void saveData() {
-        // Save gold data to config or database
-        // This is a placeholder for future implementation
+        try {
+            if (!goldFile.exists()) {
+                goldFile.getParentFile().mkdirs();
+                goldFile.createNewFile();
+            }
 
+            goldConfig = new YamlConfiguration();
 
+            // Save all player gold data
+            for (Map.Entry<UUID, Integer> entry : playerGold.entrySet()) {
+                goldConfig.set("gold." + entry.getKey().toString(), entry.getValue());
+            }
+
+            goldConfig.save(goldFile);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Could not save gold data: " + e.getMessage());
+        }
     }
 
-    /**
-     * Loads gold data from config or database
-     */
     public void loadData() {
-        // Load gold data from config or database
-        // This is a placeholder for future implementation
+        if (!goldFile.exists()) {
+            return;
+        }
+
+        goldConfig = YamlConfiguration.loadConfiguration(goldFile);
+
+        if (goldConfig.contains("gold")) {
+            for (String uuidString : goldConfig.getConfigurationSection("gold").getKeys(false)) {
+                try {
+                    UUID uuid = UUID.fromString(uuidString);
+                    int amount = goldConfig.getInt("gold." + uuidString);
+                    playerGold.put(uuid, amount);
+                } catch (IllegalArgumentException e) {
+                    plugin.getLogger().warning("Invalid UUID in gold.yml: " + uuidString);
+                }
+            }
+        }
     }
 }

@@ -17,14 +17,14 @@ public class ReloadCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("thejailbreakshow.reload")) {
-            sender.sendMessage(ChatColor.RED + "You don't have permission to use this command.");
+            sender.sendMessage(ChatColor.RED + plugin.getLanguageManager().getMessage("general.no_permission"));
             return true;
         }
 
-        sender.sendMessage(ChatColor.YELLOW + "Reloading TheJailBreakShow configuration...");
+        sender.sendMessage(ChatColor.YELLOW + plugin.getLanguageManager().getMessage("reload.reloading"));
         plugin.reloadPlugin();
-        sender.sendMessage(ChatColor.GREEN + "Configuration reloaded successfully!");
-        
+        sender.sendMessage(ChatColor.GREEN + plugin.getLanguageManager().getMessage("general.reload"));
+
         return true;
     }
 }

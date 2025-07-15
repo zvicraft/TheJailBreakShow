@@ -4,6 +4,7 @@ import com.zvicraft.theJailBreakShow.Rounds.LrSystems;
 import com.zvicraft.theJailBreakShow.TheJailBreakShow;
 import com.zvicraft.theJailBreakShow.Teams.Teams;
 import com.zvicraft.theJailBreakShow.Teams.teamsManagers;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,6 +33,16 @@ public class GoldEvents implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player victim = event.getEntity();
+
+        // Change the dead player to spectator
+        if (teamsManagers.isPlayerInGuardTeam(victim) || teamsManagers.isPlayerInPrisonerTeam(victim)) {
+            // Schedule the team change for next tick to avoid conflicts
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                teamsManagers.setPlayerTeam(victim, Teams.Spectators);
+                victim.sendMessage(ChatColor.GRAY + plugin.getLanguageManager().getMessage("death.spectator_message"));
+            });
+        }
+
         Player killer = victim.getKiller();
 
         // If there's no killer or the killer is not a player, return
@@ -65,7 +76,8 @@ public class GoldEvents implements Listener {
         // Guard kills Prisoner
         if (killerTeam == Teams.Guards && victimTeam == Teams.Prisoners) {
             goldManager.addGold(killer, GUARD_KILLS_PRISONER_REWARD);
-            killer.sendMessage(ChatColor.GOLD + "You received " + GUARD_KILLS_PRISONER_REWARD + " gold for killing a prisoner!");
+            killer.sendMessage(ChatColor.GOLD + plugin.getLanguageManager().getMessage("gold.guard_kill_reward", 
+                "%amount%", String.valueOf(GUARD_KILLS_PRISONER_REWARD)));
         }
     }
 

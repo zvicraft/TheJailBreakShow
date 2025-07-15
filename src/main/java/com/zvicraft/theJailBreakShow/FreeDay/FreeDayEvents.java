@@ -1,6 +1,7 @@
 package com.zvicraft.theJailBreakShow.FreeDay;
 
 import com.zvicraft.theJailBreakShow.TheJailBreakShow;
+import com.zvicraft.theJailBreakShow.utils.LanguageManager;
 import com.zvicraft.theJailBreakShow.Teams.Teams;
 import com.zvicraft.theJailBreakShow.Teams.teamsManagers;
 import org.bukkit.ChatColor;

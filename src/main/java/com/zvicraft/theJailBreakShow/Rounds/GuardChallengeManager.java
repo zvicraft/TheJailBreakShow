@@ -3,6 +3,8 @@ package com.zvicraft.theJailBreakShow.Rounds;
 import com.zvicraft.theJailBreakShow.Teams.Teams;
 import com.zvicraft.theJailBreakShow.Teams.teamsManagers;
 import com.zvicraft.theJailBreakShow.TheJailBreakShow;
+import com.zvicraft.theJailBreakShow.utils.LanguageManager;
+import com.zvicraft.theJailBreakShow.utils.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -43,11 +45,14 @@ public class GuardChallengeManager {
         Player selectedPrisoner = prisoners.get(random.nextInt(prisoners.size()));
 
 
-        // Announce the challenge
-        Bukkit.broadcastMessage(ChatColor.GOLD + "===================");
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Guard Challenge has begun!");
-        Bukkit.broadcastMessage(ChatColor.YELLOW + "Player " + selectedPrisoner.getName() + " has been chosen to become a Guard!");
-        Bukkit.broadcastMessage(ChatColor.GOLD + "===================");
+        // Get language manager
+        LanguageManager lang = plugin.getLanguageManager();
+
+        // Announce the challenge using language manager
+        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.separator"));
+        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.begun"));
+        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.player_chosen", "%player%", selectedPrisoner.getName()));
+        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.separator"));
 
         // Change the player's team
         teamsManagers.setPlayerTeam(selectedPrisoner, Teams.Guards);

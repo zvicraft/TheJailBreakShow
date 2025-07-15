@@ -1,5 +1,8 @@
 # TheJailBreakShow Configuration
 
+# Language setting (en, he, etc.)
+language: "en"
+
 # Teams Configuration
 teams:
   max-guards: 2
@@ -28,3 +31,21 @@ currency:
 # HUD Configuration
 hud:
   update-interval: 20 # in ticks
+
+# Guard Challenges Configuration
+guard-challenges:
+  speed:
+    effect: "SPEED"
+    duration: 30 # in seconds
+    amplifier: 1 # effect level (0 = level 1)
+    cost: 100
+  strength:
+    effect: "INCREASE_DAMAGE"
+    duration: 20
+    amplifier: 0
+    cost: 150
+  jump:
+    effect: "JUMP"
+    duration: 25
+    amplifier: 1
+    cost: 75

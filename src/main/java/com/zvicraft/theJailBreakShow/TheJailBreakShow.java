@@ -10,6 +10,7 @@ import com.zvicraft.theJailBreakShow.GUI.GuardChallengeGUI;
 import com.zvicraft.theJailBreakShow.GUI.GuardSelectionGUI;
 import com.zvicraft.theJailBreakShow.HUD.HUDManager;
 import com.zvicraft.theJailBreakShow.Listeners.ChatChallengeListener;
+import com.zvicraft.theJailBreakShow.Listeners.PlayerInventoryListener;
 import com.zvicraft.theJailBreakShow.Listeners.TriviaChatListener;
 import com.zvicraft.theJailBreakShow.Rounds.GuardChallengeManager;
 import com.zvicraft.theJailBreakShow.Rounds.RoundsSystems;
@@ -32,6 +33,7 @@ public final class TheJailBreakShow extends JavaPlugin {
     private TriviaManager triviaManager;
     private ChatChallengeManager chatChallengeManager;
     private GUIManager guiManager;
+    private boolean gameActive = false;
 
     @Override
     public void onEnable() {
@@ -76,7 +78,12 @@ public final class TheJailBreakShow extends JavaPlugin {
 
         // Register commands
         getCommand("guardchallenge").setExecutor(new GuardChallengeCommand(this));
-        getCommand("selectguard").setExecutor(new GuardSelectionCommand(this));
+
+        // Guard selection command with tab completion
+        GuardSelectionCommand guardSelectionCommand = new GuardSelectionCommand(this);
+        getCommand("selectguard").setExecutor(guardSelectionCommand);
+        getCommand("selectguard").setTabCompleter(guardSelectionCommand);
+
         getCommand("lr").setExecutor(new LRCommand(this));
 
         // Register language command
@@ -111,6 +118,9 @@ public final class TheJailBreakShow extends JavaPlugin {
 
         // Register chat challenge listener
         getServer().getPluginManager().registerEvents(new ChatChallengeListener(this), this);
+
+        // Register player inventory listener
+        getServer().getPluginManager().registerEvents(new PlayerInventoryListener(this), this);
 
         // ... other initialization code ...
         goldManager.loadData();
@@ -265,5 +275,21 @@ public final class TheJailBreakShow extends JavaPlugin {
         return new teamsManagers();
     }
 
+    /**
+     * Check if the game is currently active
+     *
+     * @return true if the game is active, false otherwise
+     */
+    public boolean isGameActive() {
+        return gameActive;
+    }
 
+    /**
+     * Set the game active state
+     *
+     * @param active true to set the game as active, false otherwise
+     */
+    public void setGameActive(boolean active) {
+        this.gameActive = active;
+    }
 }

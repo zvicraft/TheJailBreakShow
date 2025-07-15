@@ -36,10 +36,27 @@ public class GoldEvents implements Listener {
 
         // Change the dead player to spectator
         if (teamsManagers.isPlayerInGuardTeam(victim) || teamsManagers.isPlayerInPrisonerTeam(victim)) {
+            // Store the player's team before they died
+            Teams originalTeam = teamsManagers.getPlayerTeam(victim);
+
             // Schedule the team change for next tick to avoid conflicts
             Bukkit.getScheduler().runTask(plugin, () -> {
                 teamsManagers.setPlayerTeam(victim, Teams.Spectators);
                 victim.sendMessage(ChatColor.GRAY + plugin.getLanguageManager().getMessage("death.spectator_message"));
+
+                // Broadcast elimination message
+                String teamColor = originalTeam == Teams.Guards ? ChatColor.BLUE.toString() : ChatColor.RED.toString();
+                String teamName = originalTeam == Teams.Guards ?
+                        plugin.getLanguageManager().getMessage("teams.guard") :
+                        plugin.getLanguageManager().getMessage("teams.prisoner");
+
+                Bukkit.broadcastMessage(ChatColor.GOLD +
+                        plugin.getLanguageManager().getMessage("death.elimination_message",
+                                "%player%", victim.getName(),
+                                "%team%", teamColor + teamName + ChatColor.GOLD));
+
+                // Check for team elimination
+                checkTeamElimination(originalTeam);
             });
         }
 
@@ -76,8 +93,8 @@ public class GoldEvents implements Listener {
         // Guard kills Prisoner
         if (killerTeam == Teams.Guards && victimTeam == Teams.Prisoners) {
             goldManager.addGold(killer, GUARD_KILLS_PRISONER_REWARD);
-            killer.sendMessage(ChatColor.GOLD + plugin.getLanguageManager().getMessage("gold.guard_kill_reward", 
-                "%amount%", String.valueOf(GUARD_KILLS_PRISONER_REWARD)));
+            killer.sendMessage(ChatColor.GOLD + plugin.getLanguageManager().getMessage("gold.guard_kill_reward",
+                    "%amount%", String.valueOf(GUARD_KILLS_PRISONER_REWARD)));
         }
     }
 
@@ -96,5 +113,28 @@ public class GoldEvents implements Listener {
      */
     public void resetKillCounts() {
         playerKills.clear();
+    }
+
+    /**
+     * Checks if a team has been completely eliminated
+     *
+     * @param team The team to check
+     */
+    private void checkTeamElimination(Teams team) {
+        if (team == Teams.Guards && teamsManagers.getNumberOfGuards() == 0) {
+            // All guards eliminated
+            Bukkit.broadcastMessage(ChatColor.RED + plugin.getLanguageManager().getMessage("rounds.all_guards_eliminated"));
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                // End the current round if all guards are eliminated
+                plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "endgame");
+            }, 60L); // 3-second delay
+        } else if (team == Teams.Prisoners && teamsManagers.getNumberOfPrisoners() == 0) {
+            // All prisoners eliminated
+            Bukkit.broadcastMessage(ChatColor.RED + plugin.getLanguageManager().getMessage("rounds.all_prisoners_eliminated"));
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                // End the current round if all prisoners are eliminated
+                plugin.getServer().dispatchCommand(Bukkit.getConsoleSender(), "endgame");
+            }, 60L); // 3-second delay
+        }
     }
 }

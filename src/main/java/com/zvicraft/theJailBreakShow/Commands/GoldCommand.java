@@ -129,6 +129,11 @@ public class GoldCommand implements CommandExecutor, TabCompleter {
                         return true;
                     }
 
+                    // Make sure the player exists in the gold manager
+                    if (!goldManager.hasPlayer(target.getUniqueId())) {
+                        goldManager.setGold(target, plugin.getConfigManager().getConfig().getInt("currency.initial-gold", 100));
+                    }
+
                     int gold = goldManager.getGold(target);
                     sender.sendMessage(ChatColor.GOLD + lang.getMessage("gold.balance_other",
                             "%player%", target.getName(),
@@ -203,7 +208,7 @@ public class GoldCommand implements CommandExecutor, TabCompleter {
                         target.sendMessage(ChatColor.RED + lang.getMessage("gold.lost",
                                 "%amount%", String.valueOf(amount)));
                     } else {
-                        sender.sendMessage(ChatColor.RED + lang.getMessage("general.not_enough_gold",
+                        sender.sendMessage(ChatColor.RED + lang.getMessage("reload.not_enough_gold",
                                 "%player%", target.getName()));
                     }
                 } catch (NumberFormatException e) {

@@ -49,10 +49,10 @@ public class GuardChallengeManager {
         LanguageManager lang = plugin.getLanguageManager();
 
         // Announce the challenge using language manager
-        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.separator"));
-        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.begun"));
-        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.player_chosen", "%player%", selectedPrisoner.getName()));
-        Bukkit.broadcastMessage(lang.getMessage("guard_challenge.separator"));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', lang.getMessage("guard_challenge.separator")));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', lang.getMessage("guard_challenge.begun")));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', lang.getMessage("guard_challenge.player_chosen", "%player%", selectedPrisoner.getName())));
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', lang.getMessage("guard_challenge.separator")));
 
         // Change the player's team
         teamsManagers.setPlayerTeam(selectedPrisoner, Teams.Guards);

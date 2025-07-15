@@ -5,6 +5,10 @@ general:
   no_permission: "&cאין לך הרשאה להשתמש בפקודה זו!"
   prefix: "&6[JailBreak] &r"
   reload: "&aההגדרות נטענו מחדש בהצלחה!"
+  system_message: "הודעת מערכת"
+  game_not_active: "&cהמשחק עדיין לא פעיל! אנא המתן להתחלת המשחק."
+  game_active: "&aהמשחק פעיל כרגע."
+  game_inactive: "&cהמשחק אינו פעיל כרגע."
 
 # Reload command
 reload:
@@ -22,6 +26,7 @@ reload:
 # Death messages
 death:
   spectator_message: "&7אתה מת! הפכת לצופה."
+  elimination_message: "&6%player% חוסל מקבוצת ה%team%!"
 
 # Team-related messages
 teams:
@@ -29,9 +34,31 @@ teams:
   player_joined_guards: "&9אתה עכשיו סוהר!"
   player_joined_spectators: "&7אתה עכשיו צופה!"
   teams_setup: "&aהקבוצות הוגדרו."
+  guard: "סוהר"
+  prisoner: "אסיר"
+  spectator: "צופה"
+  none: "ללא"
   guard_selected: "&a%player% ענה ראשון ונבחר להיות סוהר!"
   challenge_cancelled: "&cאתגר בחירת הסוהר בוטל."
   not_enough_players: "&cאין מספיק שחקנים כדי להתחיל אתגר בחירת סוהר!"
+
+# Guard selection messages
+guard_selection:
+  player_selected: "נבחר להיות סוהר!"
+  admin_selected: "בחרת את %player% להיות סוהר."
+  random_selected: "%player% נבחר באופן אקראי להיות סוהר."
+  no_players: "אין שחקנים מחוברים!"
+  chat_challenge_started: "אתגר צ'אט התחיל! הראשון שיענה נכון יהפוך לסוהר."
+  chat_challenge_error: "לא ניתן להתחיל את אתגר הצ'אט."
+  guard_selected: "&a%player% ענה ראשון ונבחר להיות סוהר!"
+  challenge_cancelled: "&cאתגר בחירת הסוהר בוטל."
+  not_enough_players: "&cאין מספיק שחקנים כדי להתחיל אתגר בחירת סוהר!"
+  already_guard: "&c%player% כבר סוהר!"
+  max_guards: "&cמספר הסוהרים המקסימלי הושג!"
+  math_question: "מהו %num1% %operation% %num2%?"
+  trivia_prefix: "שאלת טריוויה:"
+  unscramble_prefix: "פענח את המילה המבולגנת:"
+  type_prefix: "הקלד מהר:"
 
 # LR System messages
 lr:
@@ -82,12 +109,13 @@ gold:
   received_from: "&aקיבלת &e%amount% &aזהב מ%player%!"
   gave: "&aנתת &e%amount% &aזהב ל%player%"
   spent: "&cהוצאת &e%amount% &cזהב."
-  not_enough: "&cאין ל%player% מספיק זהב!"
+  not_enough: "&cאין לך מספיק זהב! נדרש: &e%amount%"
   lost: "&cאיבדת &e%amount% &cזהב"
   took: "&aלקחת &e%amount% &aזהב מ%player%"
   usage_give: "&cשימוש: /gold give <player> <amount>"
   usage_take: "&cשימוש: /gold take <player> <amount>"
   guard_kill_reward: "&6קיבלת %amount% זהב עבור הריגת אסיר!"
+  help: "&6השתמש ב-/gold לאפשרויות ניהול זהב"
 
 # EndGame command
 endgame:
@@ -97,43 +125,110 @@ endgame:
   footer: "&6============================="
   min_players: "&cלא ניתן לסיים משחק עם פחות מ-%min% שחקנים."
   waiting: "&eממתין לשחקנים נוספים..."
-
-  # Language command
-  language:
-    title: "הגדרות שפה"
-    current: "שפה נוכחית"
-    available: "שפות זמינות"
-    usage: "השתמש ב- /language <code> כדי לשנות את השפה"
-    not_available: "שפה '%lang%' אינה זמינה"
-    changed: "השפה שונתה ל: %lang%"
-    broadcast: "שפת השרת שונתה ל-%lang% על ידי %player%"
-
-  # GUI messages
-  gui:
-    guard_challenge_title: "אתגרי סוהר"
-    guard_selection_title: "בחירת סוהר"
-    current_team: "קבוצה נוכחית:"
-    click_to_select_guard: "לחץ כדי לבחור כסוהר"
-    random_selection: "בחירה אקראית"
-    random_selection_desc: "בחר סוהר אקראי"
-    chat_challenge: "אתגר צ'אט"
-    chat_challenge_desc: "הראשון שיענה נכון יהפוך לסוהר"
-    challenge:
-      speed_title: "אתגר מהירות"
-      speed_desc: "קבל תגבור מהירות לזמן מוגבל"
-      strength_title: "אתגר כוח"
-      strength_desc: "קבל נזק מוגבר לזמן מוגבל"
-      jump_title: "אתגר קפיצה"
-      jump_desc: "קבל קפיצה משופרת לזמן מוגבל"
-      cost: "עלות: %amount% זהב"
-
-  # Challenge messages
+  title: "הגדרות שפה"
+  current: "שפה נוכחית"
+  available: "שפות זמינות"
+  usage: "השתמש ב- /language <code> כדי לשנות את השפה"
+  not_available: "שפה '%lang%' אינה זמינה"
+  changed: "השפה שונתה ל: %lang%"
+  broadcast: "שפת השרת שונתה ל-%lang% על ידי %player%"
+  guard_challenge_title: "אתגרי סוהר"
+  guard_selection_title: "בחירת סוהר"
+  current_team: "קבוצה נוכחית:"
+  click_to_select_guard: "לחץ כדי לבחור כסוהר"
+  random_selection: "בחירה אקראית"
+  random_selection_desc: "בחר סוהר אקראי"
+  chat_challenge: "אתגר צ'אט"
+  chat_challenge_desc: "הראשון שיענה נכון יהפוך לסוהר"
+  team_control_title: "ניהול קבוצות"
+  gold:
+    title: "ניהול זהב"
+    balance_title: "יתרת הזהב שלך"
+    current_balance: "יתרה נוכחית: %amount%"
+    admin_title: "בקרת מנהל"
+    admin_desc: "השתמש בפקודות לאפשרויות מתקדמות"
+    admin_give_cmd: "/gold give <player> <amount>"
+    admin_take_cmd: "/gold take <player> <amount>"
+    inventory_help: "לא ניתן לקחת זהב מהאינוונטורי"
+  freeday:
+    trigger_title: "הפעל יום חופשי"
+    trigger_desc: "לחץ כדי להפעיל יום חופשי"
   challenge:
-    activated: "הפעלת את %challenge% עבור %cost% זהב!"
-    not_enough_gold: "אין לך מספיק זהב עבור אתגר זה!"
+    speed_title: "אתגר מהירות"
+    speed_desc: "קבל תגבור מהירות לזמן מוגבל"
+    strength_title: "אתגר כוח"
+    strength_desc: "קבל נזק מוגבר לזמן מוגבל"
+    jump_title: "אתגר קפיצה"
+    jump_desc: "קבל קפיצה משופרת לזמן מוגבל"
+    cost: "עלות: %amount% זהב"
 
-  # Guard Challenge messages
-  guard_challenge:
-    separator: "&6============================"
-    begun: "&aאתגר סוהר החל!"
-    player_chosen: "&e%player% נבחר להיות סוהר!"
+# Language command
+language:
+  title: "הגדרות שפה"
+  current: "שפה נוכחית"
+  available: "שפות זמינות"
+  usage: "השתמש ב- /language <code> כדי לשנות את השפה"
+  not_available: "שפה '%lang%' אינה זמינה"
+  changed: "השפה שונתה ל: %lang%"
+  broadcast: "שפת השרת שונתה ל-%lang% על ידי %player%"
+
+# GUI messages
+gui:
+  guard_challenge_title: "אתגרי סוהר"
+  guard_selection_title: "בחירת סוהר"
+  current_team: "קבוצה נוכחית:"
+  click_to_select_guard: "לחץ כדי לבחור כסוהר"
+  random_selection: "בחירה אקראית"
+  random_selection_desc: "בחר סוהר אקראי"
+  chat_challenge: "אתגר צ'אט"
+  chat_challenge_desc: "הראשון שיענה נכון יהפוך לסוהר"
+  team_control_title: "ניהול קבוצות"
+  freeday_control_title: "בקרת יום חופשי"
+  gold:
+    title: "ניהול זהב"
+    balance_title: "יתרת הזהב שלך"
+    current_balance: "יתרה נוכחית: %amount%"
+    admin_title: "בקרת מנהל"
+    admin_desc: "השתמש בפקודות לאפשרויות מתקדמות"
+    admin_give_cmd: "/gold give <player> <amount>"
+    admin_take_cmd: "/gold take <player> <amount>"
+    inventory_help: "לא ניתן לקחת זהב מהאינוונטורי"
+  freeday:
+    trigger_title: "הפעל יום חופשי"
+    trigger_desc: "לחץ כדי להפעיל יום חופשי"
+  challenge:
+    speed_title: "אתגר מהירות"
+    speed_desc: "קבל תגבור מהירות לזמן מוגבל"
+    strength_title: "אתגר כוח"
+    strength_desc: "קבל נזק מוגבר לזמן מוגבל"
+    jump_title: "אתגר קפיצה"
+    jump_desc: "קבל קפיצה משופרת לזמן מוגבל"
+    cost: "עלות: %amount% זהב"
+
+# Challenge messages
+challenge:
+  activated: "הפעלת את %challenge% עבור %cost% זהב!"
+  not_enough_gold: "אין לך מספיק זהב עבור אתגר זה!"
+
+# Guard Challenge messages
+guard_challenge:
+  separator: "&6============================"
+  begun: "&aאתגר סוהר החל!"
+  player_chosen: "&e%player% נבחר להיות סוהר!"
+
+# Trivia messages
+trivia:
+  help:
+    header: "=== פקודות טריוויה ==="
+    start: "/trivia start - התחל משחק טריוויה חדש"
+    cancel: "/trivia cancel - בטל את משחק הטריוויה הנוכחי"
+    reload: "/trivia reload - טען מחדש את שאלות הטריוויה"
+    answer: "/trivia answer <תשובה> - ענה על שאלת טריוויה נוכחית"
+  started: "משחק טריוויה חדש התחיל!"
+  cancelled: "משחק הטריוויה בוטל."
+  reloaded: "שאלות הטריוויה נטענו מחדש."
+  already_active: "משחק טריוויה כבר פעיל!"
+  not_active: "אין משחק טריוויה פעיל כרגע."
+  provide_answer: "אנא ספק תשובה לשאלת הטריוויה."
+  incorrect_answer: "תשובה לא נכונה, נסה שוב!"
+  error_starting: "שגיאה בהתחלת משחק הטריוויה."

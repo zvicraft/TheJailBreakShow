@@ -33,6 +33,16 @@ public class GoldManager {
         saveData(); // Save automatically when gold is modified
     }
 
+    /**
+     * Checks if a player exists in the gold database
+     *
+     * @param uuid The player's UUID
+     * @return True if the player exists in the database
+     */
+    public boolean hasPlayer(UUID uuid) {
+        return playerGold.containsKey(uuid);
+    }
+
     public void addGold(Player player, int amount) {
         int currentGold = getGold(player);
         setGold(player, currentGold + amount);

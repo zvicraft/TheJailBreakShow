@@ -185,13 +185,20 @@ public class GuardChallengeGUI implements Listener {
             duration = challenge.duration;
             amplifier = challenge.amplifier;
 
+            if (effectType == null) {
+                player.sendMessage(ChatColor.RED + "Error: Invalid effect type: " + challenge.effectType);
+                plugin.getLogger().warning("Invalid effect type: " + challenge.effectType + " for challenge: " + challengeName);
+                return;
+            }
+
             if (plugin.getGoldManager().removeGold(player, cost)) {
                 player.addPotionEffect(new PotionEffect(effectType, duration, amplifier));
                 player.sendMessage(ChatColor.GREEN + lang.getMessage("challenge.activated",
                         "%challenge%", lang.getMessage("gui.challenge." + challengeName + "_title"),
                         "%cost%", String.valueOf(cost)));
             } else {
-                player.sendMessage(ChatColor.RED + lang.getMessage("challenge.not_enough_gold"));
+                player.sendMessage(ChatColor.RED + lang.getMessage("gold.not_enough",
+                        "%amount%", String.valueOf(cost)));
             }
         }
     }

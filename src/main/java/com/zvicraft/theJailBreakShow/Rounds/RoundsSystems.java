@@ -56,6 +56,12 @@ public class RoundsSystems {
             return;
         }
 
+        // Set game as inactive
+        plugin.setGameActive(false);
+
+        // Set game as active
+        plugin.setGameActive(true);
+
         // Get your language manager messages here
         Bukkit.broadcastMessage(TheJailBreakShow.getInstance().getLanguageManager()
                 .getMessage("rounds.all_guards_eliminated"));

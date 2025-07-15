@@ -19,9 +19,20 @@ reload:
   game_inactive: "&cThe game is currently not active."
   system_message: "System Message"
 
+  # Language command
+  language:
+  title: "Language Settings"
+  current: "Current language"
+  available: "Available languages"
+  usage: "Use /language <code> to change the language"
+  not_available: "Language '%lang%' is not available"
+  changed: "Language changed to: %lang%"
+  broadcast: "Server language changed to %lang% by %player%"
+
 # Death messages
 death:
   spectator_message: "&7You died! You are now a spectator."
+  elimination_message: "&6%player% has been eliminated from the %team% team!"
 
 # Team-related messages
 teams:
@@ -45,6 +56,12 @@ guard_selection:
   guard_selected: "&a%player% answered first and has been selected as the guard!"
   challenge_cancelled: "&cThe guard selection challenge has been cancelled."
   not_enough_players: "&cNot enough players to start a guard selection challenge!"
+  already_guard: "&c%player% is already a guard!"
+  max_guards: "&cThe maximum number of guards has been reached!"
+  math_question: "What is %num1% %operation% %num2%?"
+  trivia_prefix: "Trivia Question:"
+  unscramble_prefix: "Unscramble the word:"
+  type_prefix: "Type quickly:"
 
 # LR System messages
 lr:
@@ -101,6 +118,7 @@ gold:
   usage_give: "&cUsage: /gold give <player> <amount>"
   usage_take: "&cUsage: /gold take <player> <amount>"
   guard_kill_reward: "&6You received %amount% gold for killing a prisoner!"
+  help: "&6Use /gold for gold management options"
 
 # EndGame command
 endgame:
@@ -121,6 +139,19 @@ gui:
   random_selection_desc: "Select a random guard"
   chat_challenge: "Chat Challenge"
   chat_challenge_desc: "First to answer correctly becomes the guard"
+  team_control_title: "Team Control"
+  gold:
+    title: "Gold Management"
+    balance_title: "Your Gold Balance"
+    current_balance: "Current Balance: %amount%"
+    admin_title: "Admin Controls"
+    admin_desc: "Use commands for advanced options"
+    admin_give_cmd: "/gold give <player> <amount>"
+    admin_take_cmd: "/gold take <player> <amount>"
+    inventory_help: "You cannot take gold from inventory"
+  freeday:
+    trigger_title: "Trigger Free Day"
+    trigger_desc: "Click to activate Free Day"
   challenge:
     speed_title: "Speed Challenge"
     speed_desc: "Get a speed boost for a limited time"
@@ -140,3 +171,20 @@ guard_challenge:
   separator: "&6============================"
   begun: "&aA guard challenge has begun!"
   player_chosen: "&e%player% has been chosen to be a guard!"
+
+# Trivia messages
+trivia:
+  help:
+    header: "=== Trivia Commands ==="
+    start: "/trivia start - Start a new trivia game"
+    cancel: "/trivia cancel - Cancel the current trivia game"
+    reload: "/trivia reload - Reload trivia questions"
+    answer: "/trivia answer <answer> - Answer current trivia question"
+  started: "A new trivia game has started!"
+  cancelled: "The trivia game has been cancelled."
+  reloaded: "Trivia questions have been reloaded."
+  already_active: "A trivia game is already active!"
+  not_active: "There is no active trivia game."
+  provide_answer: "Please provide an answer to the trivia question."
+  incorrect_answer: "Incorrect answer, try again!"
+  error_starting: "Error starting trivia game."

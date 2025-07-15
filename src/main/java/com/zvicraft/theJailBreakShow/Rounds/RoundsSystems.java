@@ -23,13 +23,16 @@ import java.util.Random;
 import java.util.UUID;
 
 public class RoundsSystems {
-    private static int currentRound = 0;
+    private static boolean isGameActive = false;
+    private static int currentRound = 1;
     private static boolean isFreeDayActive = false;
     private static BukkitTask roundTask;
     private static final Random random = new Random();
     private static TheJailBreakShow plugin;
     private static Location guardSpawnLocation;
     private static List<Location> prisonerSpawnLocations = new ArrayList<>();
+    private static GuardChallengeManager guardChallengeManager;
+    private static final int GUARD_CHALLENGE_INTERVAL = 3; // Every 3 rounds
 
 
     /**
@@ -41,6 +44,7 @@ public class RoundsSystems {
         plugin = mainPlugin;
         loadSpawnLocations();
         startPlayerCountCheck();
+        guardChallengeManager = new GuardChallengeManager(mainPlugin);
     }
 
     /**
@@ -140,11 +144,53 @@ public class RoundsSystems {
         }
     }
 
+    private static final int MIN_PLAYERS = 2;
+
     /**
-     * Starts a new round
+     * Starts the game
      */
+    public static void startGame() {
+        int onlinePlayers = Bukkit.getOnlinePlayers().size();
+        if (onlinePlayers < MIN_PLAYERS) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Not enough players to start the game! (Minimum: " + MIN_PLAYERS + ", Current: " + onlinePlayers + ")");
+            return;
+        }
+
+        // Set all players as prisoners initially
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            teamsManagers.setPlayerTeam(player, Teams.Prisoners);
+        }
+
+        isGameActive = true;
+        currentRound = 1;
+        Bukkit.broadcastMessage(ChatColor.GREEN + "The game has started!");
+        startRound();
+    }
+
+    /**
+     * Stops the game
+     */
+    public static void stopGame() {
+        isGameActive = false;
+        currentRound = 0;
+        Bukkit.broadcastMessage(ChatColor.RED + "The game has been stopped!");
+        if (roundTask != null) {
+            roundTask.cancel();
+            roundTask = null;
+        }
+    }
+
     public static void startRound() {
+        if (!isGameActive) {
+            return; // Don't start rounds if game isn't active
+        }
+
         currentRound++;
+
+        // Check if it's time for a guard challenge (every GUARD_CHALLENGE_INTERVAL rounds)
+        if (currentRound % GUARD_CHALLENGE_INTERVAL == 0) {
+            guardChallengeManager.startGuardChallenge();
+        }
 
         int freeDayRound = plugin.getConfigManager().getConfig().getInt("rounds.free-day-round", 6);
         int resetAfterRound = plugin.getConfigManager().getConfig().getInt("rounds.reset-after-round", 12);
@@ -214,6 +260,11 @@ public class RoundsSystems {
             roundTask = null;
         }
 
+        // Reset kill counts for the next round
+        if (plugin.getGoldEvents() != null) {
+            plugin.getGoldEvents().resetKillCounts();
+        }
+
         FadeToBlack.fade(plugin);
 
         // Start a new round only if auto-progress is enabled
@@ -259,6 +310,10 @@ public class RoundsSystems {
      */
     public static List<Location> getPrisonerSpawnLocations() {
         return prisonerSpawnLocations;
+    }
+
+    public static boolean isGameActive() {
+        return isGameActive;
     }
 
 }

@@ -1,6 +1,8 @@
 package com.zvicraft.theJailBreakShow.utils;
 
 import com.zvicraft.theJailBreakShow.TheJailBreakShow;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -21,19 +23,27 @@ public class ConfigManager {
      * Loads the configuration file
      */
     public void loadConfig() {
-        // Create config file if it doesn't exist
-        if (configFile == null) {
-            configFile = new File(plugin.getDataFolder(), "config.yml");
+        // Load or create default config
+        plugin.saveDefaultConfig();
+        // Don't call getConfig() here - instead, call reloadConfig()
+        reloadConfig();
+
+        // Load spectator spawn location if configured
+        if (config.contains("spawn.spectator")) {
+            String worldName = config.getString("spawn.spectator.world");
+            double x = config.getDouble("spawn.spectator.x");
+            double y = config.getDouble("spawn.spectator.y");
+            double z = config.getDouble("spawn.spectator.z");
+            float yaw = (float) config.getDouble("spawn.spectator.yaw", 0.0);
+            float pitch = (float) config.getDouble("spawn.spectator.pitch", 0.0);
+
+            if (worldName != null && Bukkit.getWorld(worldName) != null) {
+                Location spectatorSpawn = new Location(Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
+                plugin.setSpectatorSpawnLocation(spectatorSpawn);
+            } else {
+                plugin.getLogger().warning("Spectator spawn world not found or not defined!");
+            }
         }
-
-        if (!configFile.exists()) {
-            plugin.saveResource("config.yml", false);
-        }
-
-        config = YamlConfiguration.loadConfiguration(configFile);
-
-        // Set default values if they don't exist
-        setDefaults();
     }
 
     /**
@@ -125,6 +135,7 @@ public class ConfigManager {
 
     /**
      * Gets the configuration file
+     *
      * @return The configuration file
      */
     public FileConfiguration getConfig() {

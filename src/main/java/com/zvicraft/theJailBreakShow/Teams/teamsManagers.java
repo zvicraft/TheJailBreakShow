@@ -14,11 +14,19 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+
 public class teamsManagers {
     private static final Map<UUID, Teams> playerTeams = new HashMap<>();
     private static int MAX_GUARDS = 2; // Will be loaded from config
     private static int DEFAULT_GUARDS = 1; // Will be loaded from config
     private static int GUARD_PRISONER_RATIO = 11; // Will be loaded from config
+
+    private static boolean isChatChallengeActive = false;
+    private static String currentChallengeAnswer = "";
+    private static final Random random = new Random();
 
     public static void setupTeams() {
         // Load configuration values
@@ -34,8 +42,11 @@ public class teamsManagers {
         createTeam(scoreboard, "guards", ChatColor.BLUE + "Guard");
         createTeam(scoreboard, "spectators", ChatColor.GRAY + "Spectator");
 
+        // Register chat challenge listener
+        setupChatChallengeListener();
+
         // Initialize default guards
-        initializeDefaultGuards();
+        // initializeDefaultGuards(); // Commented out as we'll use chat challenge instead
     }
 
     /**
@@ -93,6 +104,46 @@ public class teamsManagers {
         team.setPrefix(prefix + " ");
     }
 
+    /**
+     * Sets up the event listener for the chat challenge
+     */
+    private static void setupChatChallengeListener() {
+        TheJailBreakShow plugin = TheJailBreakShow.getInstance();
+
+        plugin.getServer().getPluginManager().registerEvents(new org.bukkit.event.Listener() {
+            @org.bukkit.event.EventHandler
+            public void onPlayerChat(org.bukkit.event.player.AsyncPlayerChatEvent event) {
+                // Only process during active chat challenge
+                if (isChatChallengeActive) {
+                    String message = event.getMessage().trim();
+                    Player player = event.getPlayer();
+
+                    // Check if this is the correct answer to the challenge
+                    if (message.equalsIgnoreCase(currentChallengeAnswer)) {
+                        event.setCancelled(true);
+                        isChatChallengeActive = false;
+
+                        // Select this player as guard
+                        plugin.getServer().getScheduler().runTask(plugin, () -> {
+                            // Set the player as guard
+                            setPlayerTeam(player, Teams.Guards);
+
+                            // Set all other players as prisoners
+                            for (Player p : Bukkit.getOnlinePlayers()) {
+                                if (!p.equals(player) && getPlayerTeam(p) != Teams.Guards) {
+                                    setPlayerTeam(p, Teams.Prisoners);
+                                }
+                            }
+
+                            // Announce the new guard
+                            Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " answered first and has been selected as the guard!");
+                        });
+                    }
+                }
+            }
+        }, plugin);
+    }
+
     public static void setPlayerTeam(Player player, Teams team) {
         playerTeams.put(player.getUniqueId(), team);
         Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -117,8 +168,8 @@ public class teamsManagers {
                 player.sendMessage(ChatColor.GRAY + "You are now a Spectator!");
                 break;
             default:
-                scoreboard.getTeam("spectators").addEntry(player.getName());
-                player.sendMessage(ChatColor.GRAY + "You are now a Spectator!");
+                scoreboard.getTeam("prisoners").addEntry(player.getName());
+                player.sendMessage(ChatColor.GRAY + "You are now a Prisoners!");
                 break;
         }
         player.setScoreboard(scoreboard);
@@ -182,6 +233,7 @@ public class teamsManagers {
 
     /**
      * Gets the maximum number of guards allowed
+     *
      * @return The maximum number of guards
      */
     public static int getMaxGuards() {
@@ -190,6 +242,7 @@ public class teamsManagers {
 
     /**
      * Gets the default number of guards
+     *
      * @return The default number of guards
      */
     public static int getDefaultGuards() {
@@ -198,9 +251,60 @@ public class teamsManagers {
 
     /**
      * Gets the guard-to-prisoner ratio
+     *
      * @return The number of prisoners per guard
      */
     public static int getGuardPrisonerRatio() {
         return GUARD_PRISONER_RATIO;
+    }
+
+    /**
+     * Starts a chat challenge for guard selection
+     *
+     * @return True if the challenge was started, false otherwise
+     */
+    public static boolean startChatChallenge() {
+        if (isChatChallengeActive) {
+            return false; // Challenge already active
+        }
+
+        if (Bukkit.getOnlinePlayers().size() < 2) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Not enough players to start a guard selection challenge!");
+            return false;
+        }
+
+        // Reset teams first
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            setPlayerTeam(player, Teams.Prisoners); // Default everyone to prisoners initially
+        }
+
+        // Select a random challenge type
+        ChatChallengeManager.ChallengeType[] challengeTypes = ChatChallengeManager.ChallengeType.values();
+        ChatChallengeManager.ChallengeType selectedType = challengeTypes[random.nextInt(challengeTypes.length)];
+
+        // Start the challenge
+        currentChallengeAnswer = ChatChallengeManager.startChallenge(selectedType);
+        isChatChallengeActive = true;
+
+        return true;
+    }
+
+    /**
+     * Checks if a chat challenge is currently active
+     *
+     * @return True if a challenge is active, false otherwise
+     */
+    public static boolean isChatChallengeActive() {
+        return isChatChallengeActive;
+    }
+
+    /**
+     * Cancels the current chat challenge if one is active
+     */
+    public static void cancelChatChallenge() {
+        if (isChatChallengeActive) {
+            isChatChallengeActive = false;
+            Bukkit.broadcastMessage(ChatColor.RED + "The guard selection challenge has been cancelled.");
+        }
     }
 }

@@ -28,7 +28,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
             return filterCompletions(subcommands, args[0]);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("join")) {
             // Suggest team names for the join subcommand
-            List<String> teams = Arrays.asList("prisoners", "guards", "spectators");
+            List<String> teams = Arrays.asList("prisoners", "spectators");
             return filterCompletions(teams, args[1]);
         }
 
@@ -44,6 +44,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
                 .filter(s -> s.toLowerCase().startsWith(input.toLowerCase()))
                 .collect(Collectors.toList());
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
@@ -54,7 +55,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
             } else {
                 // Show help message for console
                 sender.sendMessage(ChatColor.GOLD + "=== Team Commands ===");
-                sender.sendMessage(ChatColor.YELLOW + "/team join <prisoners|guards|spectators>" + ChatColor.WHITE + " - Join a team");
+                sender.sendMessage(ChatColor.YELLOW + "/team join <prisoners|spectators>" + ChatColor.WHITE + " - Join a team");
                 sender.sendMessage(ChatColor.YELLOW + "/team leave" + ChatColor.WHITE + " - Leave your current team");
                 sender.sendMessage(ChatColor.YELLOW + "/team list" + ChatColor.WHITE + " - List all teams and their members");
             }
@@ -69,7 +70,7 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
                 }
 
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + "Usage: /team join <prisoners|guards|spectators>");
+                    sender.sendMessage(ChatColor.RED + "Usage: /team join <prisoners|spectators>");
                     return true;
                 }
 
@@ -81,16 +82,16 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
                     case "prisoner":
                         teamsManagers.setPlayerTeam(player, Teams.Prisoners);
                         break;
-                    case "guards":
-                    case "guard":
-                        // Check if there are already max guards
-                        if (teamsManagers.getNumberOfGuards() >= teamsManagers.getMaxGuards() && 
-                            teamsManagers.getPlayerTeam(player) != Teams.Guards) {
-                            player.sendMessage(ChatColor.RED + "The guards team is full!");
-                            return true;
-                        }
-                        teamsManagers.setPlayerTeam(player, Teams.Guards);
-                        break;
+//                    case "guards":
+//                    case "guard":
+//                        // Check if there are already max guards
+//                        if (teamsManagers.getNumberOfGuards() >= teamsManagers.getMaxGuards() &&
+//                                teamsManagers.getPlayerTeam(player) != Teams.Guards) {
+//                            player.sendMessage(ChatColor.RED + "The guards team is full!");
+//                            return true;
+//                        }
+//                        teamsManagers.setPlayerTeam(player, Teams.Guards);
+//                        break;
                     case "spectators":
                     case "spectator":
                         teamsManagers.setPlayerTeam(player, Teams.Spectators);

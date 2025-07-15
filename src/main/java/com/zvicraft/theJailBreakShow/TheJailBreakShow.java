@@ -1,25 +1,25 @@
 package com.zvicraft.theJailBreakShow;
 
-import com.zvicraft.theJailBreakShow.Commands.FreeDayCommand;
-import com.zvicraft.theJailBreakShow.Commands.GoldCommand;
-import com.zvicraft.theJailBreakShow.Commands.ReloadCommand;
-import com.zvicraft.theJailBreakShow.Commands.TeamCommand;
-import com.zvicraft.theJailBreakShow.Commands.TestCommand;
+import com.zvicraft.theJailBreakShow.Commands.*;
 import com.zvicraft.theJailBreakShow.Currency.GoldEvents;
 import com.zvicraft.theJailBreakShow.Currency.GoldManager;
 import com.zvicraft.theJailBreakShow.FreeDay.FreeDayEvents;
 import com.zvicraft.theJailBreakShow.GUI.GUIEventHandler;
 import com.zvicraft.theJailBreakShow.HUD.HUDManager;
+import com.zvicraft.theJailBreakShow.Rounds.GuardChallengeManager;
 import com.zvicraft.theJailBreakShow.Rounds.RoundsSystems;
 import com.zvicraft.theJailBreakShow.Teams.teamsManagers;
 import com.zvicraft.theJailBreakShow.utils.ConfigManager;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class TheJailBreakShow extends JavaPlugin {
+    private GuardChallengeManager guardChallengeManager;
     private static TheJailBreakShow instance;
     private ConfigManager configManager;
     private GoldManager goldManager;
     private HUDManager hudManager;
+    private GoldEvents goldEvents;
 
     @Override
     public void onEnable() {
@@ -33,6 +33,9 @@ public final class TheJailBreakShow extends JavaPlugin {
 
         // Setup teams
         teamsManagers.setupTeams();
+
+        // Create event listeners
+        goldEvents = new GoldEvents(this, goldManager);
 
         // Initialize rounds system
         RoundsSystems.initialize(this);
@@ -52,16 +55,27 @@ public final class TheJailBreakShow extends JavaPlugin {
         getCommand("team").setExecutor(teamCommand);
         getCommand("team").setTabCompleter(teamCommand);
 
+        // Initialize the guard challenge manager
+        guardChallengeManager = new GuardChallengeManager(this);
+
+        // Register commands
+        getCommand("guardchallenge").setExecutor(new GuardChallengeCommand(this));
+
         // Register event listeners
         getServer().getPluginManager().registerEvents(new FreeDayEvents(this), this);
-        getServer().getPluginManager().registerEvents(new GoldEvents(this, goldManager), this);
+        getServer().getPluginManager().registerEvents(goldEvents, this);
         getServer().getPluginManager().registerEvents(new GUIEventHandler(), this);
 
         getLogger().info("TheJailBreakShow has been enabled!");
     }
 
+    public GuardChallengeManager getGuardChallengeManager() {
+        return guardChallengeManager;
+    }
+
     /**
      * Gets the instance of the plugin
+     *
      * @return The plugin instance
      */
     public static TheJailBreakShow getInstance() {
@@ -70,6 +84,7 @@ public final class TheJailBreakShow extends JavaPlugin {
 
     /**
      * Gets the gold manager
+     *
      * @return The gold manager
      */
     public GoldManager getGoldManager() {
@@ -78,6 +93,7 @@ public final class TheJailBreakShow extends JavaPlugin {
 
     /**
      * Gets the HUD manager
+     *
      * @return The HUD manager
      */
     public HUDManager getHUDManager() {
@@ -86,10 +102,20 @@ public final class TheJailBreakShow extends JavaPlugin {
 
     /**
      * Gets the config manager
+     *
      * @return The config manager
      */
     public ConfigManager getConfigManager() {
         return configManager;
+    }
+
+    /**
+     * Gets the gold events handler
+     *
+     * @return The gold events handler
+     */
+    public GoldEvents getGoldEvents() {
+        return goldEvents;
     }
 
     /**
@@ -118,5 +144,9 @@ public final class TheJailBreakShow extends JavaPlugin {
         }
 
         getLogger().info("TheJailBreakShow has been disabled!");
+    }
+
+    public void setSpectatorSpawnLocation(Location spectatorSpawn) {
+        spectatorSpawn.setPitch(0);
     }
 }

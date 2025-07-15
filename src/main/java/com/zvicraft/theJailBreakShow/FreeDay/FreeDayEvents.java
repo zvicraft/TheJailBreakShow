@@ -41,6 +41,7 @@ public class FreeDayEvents implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         // Additional Free Day-specific interactions can be handled here
         // For example, special Free Day activities or restrictions
-        
+
+
     }
 }

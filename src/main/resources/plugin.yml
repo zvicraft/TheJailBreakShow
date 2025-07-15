@@ -9,6 +9,7 @@ commands:
   test:
     description: Test command
     aliases: test
+    permission: thejailbreakshow.test
   freeday:
     description: Activate Free Day (Guards only)
     usage: /freeday
@@ -25,6 +26,9 @@ commands:
     description: Reload the plugin configuration
     usage: /reload
     permission: thejailbreakshow.reload
+  guardchallenge:
+    description: Guard challenge command
+    usage: /guardchallenge
 
 permissions:
   thejailbreakshow.freeday:

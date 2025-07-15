@@ -8,10 +8,11 @@ teams:
 
 # Rounds Configuration
 rounds:
+  guard-challenge-interval: 3  # Guard challenge occurs every 3 rounds
   free-day-round: 6
   reset-after-round: 12
-  round-duration: 6000 # in seconds
-  auto-progress: false # Whether rounds should automatically progress
+  round-duration: 6000
+  auto-progress: true
 
 # Free Day Configuration
 free-day:

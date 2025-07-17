@@ -1,5 +1,6 @@
 package com.zvicraft.theJailBreakShow.Rounds;
 
+import com.zvicraft.theJailBreakShow.Teams.ChatChallengeManager;
 import com.zvicraft.theJailBreakShow.TheJailBreakShow;
 import com.zvicraft.theJailBreakShow.Teams.Teams;
 import com.zvicraft.theJailBreakShow.Teams.teamsManagers;
@@ -50,26 +51,24 @@ public class RoundsSystems {
         return false;
     }
 
-    // Modify your existing guard elimination check method
+    // Guard elimination check method
     public static void checkGuardElimination() {
         if (!shouldSendGuardEliminationMessage()) {
             return;
         }
 
-        // Set game as inactive
-        plugin.setGameActive(false);
-
-        // Set game as active
-        plugin.setGameActive(true);
-
-        // Get your language manager messages here
+        // Get language manager messages
         Bukkit.broadcastMessage(TheJailBreakShow.getInstance().getLanguageManager()
                 .getMessage("rounds.all_guards_eliminated"));
         Bukkit.broadcastMessage(TheJailBreakShow.getInstance().getLanguageManager()
                 .getMessage("rounds.waiting_for_players"));
     }
 
-    // Add this method to reset the message state when starting new rounds
+    /**
+     * Resets the guard elimination message state.
+     * This should be called when starting new rounds or after handling guard elimination
+     * to prevent message spam and ensure proper timing of notifications.
+     */
     public static void resetGuardEliminationMessage() {
         guardEliminationMessageSent = false;
         lastMessageTime = 0;
@@ -154,10 +153,14 @@ public class RoundsSystems {
         }.runTaskTimer(plugin, 20L, 20L); // Check every second
     }
 
-    /**
-     * Checks if either team has been eliminated
-     */
+    private static boolean isRoundEnding = false; // Add this field
+
     public static void checkTeamCounts() {
+        // Don't check if round is already ending
+        if (isRoundEnding) {
+            return;
+        }
+
         int aliveGuards = 0;
         int alivePrisoners = 0;
 
@@ -172,20 +175,25 @@ public class RoundsSystems {
         }
 
         // End round if a team is eliminated
-        if (aliveGuards == 0) {
-            Bukkit.broadcastMessage(plugin.getLanguageManager().getMessage("rounds.all_guards_eliminated"));
+        if (aliveGuards == 0 && !isRoundEnding) {
+            isRoundEnding = true; // Set flag to prevent multiple triggers
+
+            // Send elimination message once
+            Bukkit.broadcastMessage(TheJailBreakShow.getInstance().getLanguageManager()
+                    .getMessage("rounds.all_guards_eliminated"));
+            Bukkit.broadcastMessage(TheJailBreakShow.getInstance().getLanguageManager()
+                    .getMessage("rounds.waiting_for_players"));
+
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     endRound();
+                    isRoundEnding = false; // Reset flag after round ends
 
                     // Check if there are enough players before starting next round
                     int playerCount = Bukkit.getOnlinePlayers().size();
                     if (playerCount > 2) {
-                        startRound(); // Only automatically start next round if more than 2 players
-                    } else {
-                        // If only 2 players, wait for more to join
-                        Bukkit.broadcastMessage(plugin.getLanguageManager().getMessage("rounds.waiting_for_players"));
+                        startRound();
                     }
                 }
             }.runTaskLater(plugin, 60L); // 3 second delay
@@ -198,10 +206,14 @@ public class RoundsSystems {
 
                     // Auto-progression is handled in endRound() method
                     // We don't need to call startRound() here as it would increment the day counter twice
+
+                    startRound();
                 }
             }.runTaskLater(plugin, 60L); // 3 second delay
         }
     }
+
+    // Remove or simplify checkGuardElimination since we handle it directly in checkTeamCounts
 
     private static final int MIN_PLAYERS = 2;
 
@@ -245,6 +257,11 @@ public class RoundsSystems {
         if (!isGameActive) {
             return; // Don't start rounds if game isn't active
         }
+        //get random challenge
+        ChatChallengeManager.ChallengeType currentChallenge = ChatChallengeManager.ChallengeType.values()[random.nextInt(ChatChallengeManager.ChallengeType.values().length)];
+        ChatChallengeManager.startChallenge(currentChallenge);
+        // Reset guard elimination message state at the start of each round
+        resetGuardEliminationMessage();
 
         // Check if there are enough players to start a round
         int playerCount = Bukkit.getOnlinePlayers().size();
@@ -341,10 +358,13 @@ public class RoundsSystems {
             plugin.getGoldEvents().resetKillCounts();
         }
 
+        // Reset guard elimination message state at the end of each round
+        resetGuardEliminationMessage();
+
         // Reset LR status
         LrSystems.resetLRStatus();
 
-        FadeToBlack.fade(plugin);
+//        FadeToBlack.fade(plugin);
 
         // Start a new round only if auto-progress is enabled
         boolean autoProgress = plugin.getConfigManager().getConfig().getBoolean("rounds.auto-progress", true);
